@@ -3,8 +3,8 @@ package guru.springframework.springairag.services;
 import guru.springframework.springairag.model.Answer;
 import guru.springframework.springairag.model.Question;
 import lombok.RequiredArgsConstructor;
-import org.springframework.ai.chat.ChatClient;
-import org.springframework.ai.chat.ChatResponse;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.document.Document;
@@ -24,7 +24,7 @@ import java.util.Map;
 @Service
 public class OpenAIServiceImpl implements OpenAIService {
 
-    final ChatClient chatClient;
+    private final ChatModel chatModel;
     final SimpleVectorStore vectorStore;
 
     @Value("classpath:/templates/rag-prompt-template.st")
@@ -32,6 +32,7 @@ public class OpenAIServiceImpl implements OpenAIService {
 
     @Override
     public Answer getAnswer(Question question) {
+
         List<Document> documents = vectorStore.similaritySearch(SearchRequest
                 .query(question.question()).withTopK(5));
         List<String> contentList = documents.stream().map(Document::getContent).toList();
