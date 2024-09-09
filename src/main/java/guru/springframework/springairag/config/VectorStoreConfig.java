@@ -1,9 +1,8 @@
 package guru.springframework.springairag.config;
 
-import org.springframework.ai.embedding.EmbeddingModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.embedding.EmbeddingClient;
+import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.ai.transformer.splitter.TextSplitter;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
@@ -24,7 +23,7 @@ public class VectorStoreConfig {
 
     @Bean
     public SimpleVectorStore simpleVectorStore(EmbeddingModel embeddingModel, VectorStoreProperties vectorStoreProperties) {
-        SimpleVectorStore simpleVectorStore = new SimpleVectorStore(embeddingModel);
+        SimpleVectorStore store = new SimpleVectorStore(embeddingModel);
         File vectorStoreFile = new File(vectorStoreProperties.getVectorStorePath());
 
         if (vectorStoreFile.exists()) {
@@ -44,7 +43,5 @@ public class VectorStoreConfig {
         }
 
         return store;
-        //todo add data
-        return simpleVectorStore;
     }
 }
