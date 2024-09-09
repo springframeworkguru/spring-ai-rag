@@ -25,7 +25,7 @@ import java.util.Map;
 public class OpenAIServiceImpl implements OpenAIService {
 
     private final ChatModel chatModel;
-    final SimpleVectorStore vectorStore;
+    private final SimpleVectorStore vectorStore;
 
     @Value("classpath:/templates/rag-prompt-template.st")
     private Resource ragPromptTemplate;
@@ -43,7 +43,7 @@ public class OpenAIServiceImpl implements OpenAIService {
 
         contentList.forEach(System.out::println);
 
-        ChatResponse response = chatClient.call(prompt);
+        ChatResponse response = chatModel.call(prompt);
 
         return new Answer(response.getResult().getOutput().getContent());
     }
