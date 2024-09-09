@@ -1,21 +1,24 @@
 package guru.springframework.springairag.config;
 
-import org.springframework.ai.embedding.EmbeddingClient;
+import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
 
 /**
  * Created by jt, Spring Framework Guru.
  */
+@Configuration
 public class VectorStoreConfig {
+
     @Bean
-    SimpleVectorStore simpleVectorStore(EmbeddingClient embeddingClient, VectorStoreProperties vectorStoreProperties) {
-        var store =  new SimpleVectorStore(embeddingClient);
+    public SimpleVectorStore simpleVectorStore(EmbeddingModel embeddingModel, VectorStoreProperties vectorStoreProperties) {
+        SimpleVectorStore simpleVectorStore = new SimpleVectorStore(embeddingModel);
         File vectorStoreFile = new File(vectorStoreProperties.getVectorStorePath());
 
-        //to do add data
-        return store;
+        //todo add data
+        return simpleVectorStore;
     }
 }
