@@ -23,7 +23,8 @@ public class VectorStoreConfig {
 
     @Bean
     public SimpleVectorStore simpleVectorStore(EmbeddingModel embeddingModel, VectorStoreProperties vectorStoreProperties) {
-        SimpleVectorStore store = new SimpleVectorStore(embeddingModel);
+        SimpleVectorStore store = SimpleVectorStore.builder(embeddingModel).build();
+
         File vectorStoreFile = new File(vectorStoreProperties.getVectorStorePath());
 
         if (vectorStoreFile.exists()) {
