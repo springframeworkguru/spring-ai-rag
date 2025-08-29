@@ -30,21 +30,32 @@ public class OpenAIServiceImpl implements OpenAIService {
     @Value("classpath:/templates/rag-prompt-template.st")
     private Resource ragPromptTemplate;
 
-    @Override
-    public Answer getAnswer(Question question) {
+  @Override
+  public Answer getAnswer(Question question) {
 
-        List<Document> documents = vectorStore.similaritySearch(SearchRequest.builder()
-                .query(question.question()).topK(5).build());
-        List<String> contentList = documents.stream().map(Document::getContent).toList();
+    // Søker etter de 5 mest relevante dokumentene i vector store basert på spørsmålet
+    List<Document> documents = vectorStore.similaritySearch(SearchRequest.builder()
+        .query(question.question()).topK(5).build());
 
-        PromptTemplate promptTemplate = new PromptTemplate(ragPromptTemplate);
-        Prompt prompt = promptTemplate.create(Map.of("input", question.question(), "documents",
-                String.join("\n", contentList)));
+    // Henter ut innholdet (tekst) fra dokumentene
+    List<String> contentList = documents.stream().map(Document::getContent).toList();
 
-        contentList.forEach(System.out::println);
+    // Lager en prompt-template basert på en forhåndsdefinert mal (ragPromptTemplate)
+    PromptTemplate promptTemplate = new PromptTemplate(ragPromptTemplate);
 
-        ChatResponse response = chatModel.call(prompt);
+    // Fyller inn prompten med spørsmålet og dokumentinnholdet
+    Prompt prompt = promptTemplate.create(Map.of(
+        "input", question.question(),
+        "documents", String.join("\n", contentList)
+    ));
 
-        return new Answer(response.getResult().getOutput().getContent());
-    }
+    // Skriver ut innholdet fra dokumentene til konsollen (for debugging)
+    contentList.forEach(System.out::println);
+
+    // Sender prompten til chat-modellen (f.eks. OpenAI) og får et svar
+    ChatResponse response = chatModel.call(prompt);
+
+    // Returnerer svaret pakket inn i en Answer-record
+    return new Answer(response.getResult().getOutput().getContent());
+  }
 }
